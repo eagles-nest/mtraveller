@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -47,31 +48,20 @@ public class MainActivity extends AppCompatActivity
         webView = (WebView) findViewById(R.id.mainweb);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setHorizontalScrollBarEnabled(false);
-//        webView.setWebViewClient(new WebViewClient() {
-//            @Override
-//            public void onPageFinished(WebView view, String url) {
-//                //Fun Part will be here :)
-//                webView.loadUrl("javascript:(function() { " +
-//                        "var head = document.getElementsByClassName('sticky-wrapper')[0].style.display='none'; " +
-//                        "})()");
-//
-//
-//            }
-//        });
+        loadingDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE)
+                .setTitleText("Msafirikenya Loading ...");;
+        loadingDialog.setCancelable(true);
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.show();
+
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //my new method
-                loadingDialog.getProgressHelper().getProgress();
-                loadingDialog.setCancelable(false);
-                loadingDialog.setCanceledOnTouchOutside(true);
-                loadingDialog.setTitleText("Msafirikenya Loading");
-                loadingDialog.getProgressHelper().setProgress((float)progress);
-                loadingDialog.setTitleText("Msafirikenya Loading "+String.valueOf(progress)+"%");
+                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
                 loadingDialog.show();
-//                textLoading.setText("DemosCAD loading "+ String.valueOf(progress)+"%");
                 if (progress >= 100) {
+                    //loadingDialog.dismiss();
                     loadingDialog.dismiss();
-//                    myDialog.dismiss();
                 }
             }
 
@@ -80,9 +70,29 @@ public class MainActivity extends AppCompatActivity
                 loadErrorPage(view);
             }
         });
+        boolean isOnline = isOnline();
+        if(isOnline){
+            //has internet
+            webView.loadUrl(postUrl);
+        }else{
+            //no internet
+            String errorMsg="Internet Connection required";
+            Toast.makeText(MainActivity.this,errorMsg, Toast.LENGTH_LONG).show();
+            loadingDialog.dismiss();
+        }
 
-        webView.loadUrl(postUrl);
-
+    }
+    public boolean isOnline() {
+        try {
+            Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            int returnVal = p1.waitFor();
+            boolean reachable = (returnVal==0);
+            return reachable;
+        } catch (Exception e){
+            //TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void loadErrorPage(WebView view) {
@@ -137,4 +147,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

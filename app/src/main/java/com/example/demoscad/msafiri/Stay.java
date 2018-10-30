@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Stay extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,7 +44,38 @@ public class Stay extends AppCompatActivity
 
         webView = (WebView) findViewById(R.id.stayweb);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(postUrl);
+        final SweetAlertDialog loadingDialog = new SweetAlertDialog(Stay.this, SweetAlertDialog.PROGRESS_TYPE)
+                .setTitleText("Msafirikenya Loading ...");
+        loadingDialog.setCancelable(true);
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.show();
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+                //my new method
+                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
+                loadingDialog.show();
+                if (progress >= 100) {
+                    //loadingDialog.dismiss();
+                    loadingDialog.dismiss();
+                }
+            }
+
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Log.i("WEB_VIEW_TEST", "error code:" + errorCode);
+                loadErrorPage(view);
+            }
+        });
+        boolean isOnline = isOnline();
+        if(isOnline){
+            //has internet
+            webView.loadUrl(postUrl);
+        }else{
+            //no internet
+            String errorMsg="Internet Connection required";
+            Toast.makeText(Stay.this,errorMsg, Toast.LENGTH_LONG).show();
+            loadingDialog.dismiss();
+        }
         webView.setHorizontalScrollBarEnabled(false);
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -62,8 +98,27 @@ public class Stay extends AppCompatActivity
             super.onBackPressed();
         }
     }
+    public boolean isOnline() {
+        try {
+            Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            int returnVal = p1.waitFor();
+            boolean reachable = (returnVal==0);
+            return reachable;
+        } catch (Exception e){
+            //TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private void loadErrorPage(WebView view) {
+        if (webView != null) {
 
-
+            String htmlData = "its icon";
+            webView.loadUrl("about:blank");
+            webView.loadDataWithBaseURL(null, htmlData, "text/html", "UTF-8", null);
+            webView.invalidate();
+        }
+    }
 
 
     @SuppressWarnings("StatementWithEmptyBody")
