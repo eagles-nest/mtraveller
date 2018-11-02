@@ -1,6 +1,9 @@
 package com.example.demoscad.msafiri;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -40,6 +43,7 @@ public class About extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
         webView = (WebView) findViewById(R.id.aboutweb);
@@ -66,10 +70,11 @@ public class About extends AppCompatActivity
                 loadErrorPage(view);
             }
         });
-        boolean isOnline = isOnline();
+        boolean isOnline = isOnline(About.this);
         if(isOnline){
             //has internet
             webView.loadUrl(postUrl);
+            webView.setWebViewClient(new WebViewClient());
         }else{
             //no internet
             String errorMsg="Internet Connection required";
@@ -97,17 +102,13 @@ public class About extends AppCompatActivity
             super.onBackPressed();
         }
     }
-    public boolean isOnline() {
-        try {
-            Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
-            int returnVal = p1.waitFor();
-            boolean reachable = (returnVal==0);
-            return reachable;
-        } catch (Exception e){
-            //TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return false;
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm
+                =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
     }
     private void loadErrorPage(WebView view) {
         if (webView != null) {
@@ -133,12 +134,6 @@ public class About extends AppCompatActivity
             Intent i = new Intent(About.this, Home.class);
             startActivity(i);
             // Handle the camera action
-        } else if (id == R.id.nav_stay) {
-            Intent i = new Intent(About.this, Stay.class);
-            startActivity(i);
-
-
-
         } else if (id == R.id.nav_contact) {
             Intent i = new Intent(About.this, Contact.class);
             startActivity(i);
