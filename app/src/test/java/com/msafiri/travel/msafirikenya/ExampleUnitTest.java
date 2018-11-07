@@ -1,4 +1,4 @@
-package com.example.demoscad.msafiri;
+package com.msafiri.travel.msafirikenya;
 
 import org.junit.Test;
 

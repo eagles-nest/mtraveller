@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.demoscad.msafiri"
+        applicationId "com.msafiri.travel.msafirikenya"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1

@@ -1,21 +1,17 @@
-package com.example.demoscad.msafiri;
+package com.msafiri.travel.msafirikenya;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -24,15 +20,15 @@ import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class Home extends AppCompatActivity
+public class Contact extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private String postUrl = "http://msafirikenya.co.ke/";
-    private WebView webView;
 
+    private String postUrl = "http://msafirikenya.co.ke/contact-us";
+    private WebView webView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_contact);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,9 +44,9 @@ public class Home extends AppCompatActivity
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
-        webView = (WebView) findViewById(R.id.homeweb);
+        webView = (WebView) findViewById(R.id.contactweb);
         webView.getSettings().setJavaScriptEnabled(true);
-        final SweetAlertDialog loadingDialog = new SweetAlertDialog(Home.this, SweetAlertDialog.PROGRESS_TYPE)
+        final SweetAlertDialog loadingDialog = new SweetAlertDialog(Contact.this, SweetAlertDialog.PROGRESS_TYPE)
                 .setTitleText("Msafirikenya Loading ...");;
         loadingDialog.setCancelable(true);
         loadingDialog.setCanceledOnTouchOutside(false);
@@ -72,7 +68,7 @@ public class Home extends AppCompatActivity
                 loadErrorPage(view);
             }
         });
-        boolean isOnline = isOnline(Home.this);
+        boolean isOnline = isOnline(Contact.this);
         if(isOnline){
             //has internet
             webView.loadUrl(postUrl);
@@ -80,10 +76,9 @@ public class Home extends AppCompatActivity
         }else{
             //no internet
             String errorMsg="Internet Connection required";
-            Toast.makeText(Home.this,errorMsg, Toast.LENGTH_LONG).show();
+            Toast.makeText(Contact.this,errorMsg, Toast.LENGTH_LONG).show();
             loadingDialog.dismiss();
         }
-
         webView.setHorizontalScrollBarEnabled(false);
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -95,15 +90,8 @@ public class Home extends AppCompatActivity
             }
         });
     }
-    private void loadErrorPage(WebView view) {
-        if (webView != null) {
 
-            String htmlData = "its icon";
-            webView.loadUrl("about:blank");
-            webView.loadDataWithBaseURL(null, htmlData, "text/html", "UTF-8", null);
-            webView.invalidate();
-        }
-    }
+
 
     @Override
     public void onBackPressed() {
@@ -114,8 +102,23 @@ public class Home extends AppCompatActivity
             super.onBackPressed();
         }
     }
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm
+                =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+    private void loadErrorPage(WebView view) {
+        if (webView != null) {
 
-
+            String htmlData = "its icon";
+            webView.loadUrl("about:blank");
+            webView.loadDataWithBaseURL(null, htmlData, "text/html", "UTF-8", null);
+            webView.invalidate();
+        }
+    }
 
 
 
@@ -125,17 +128,20 @@ public class Home extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_stay) {
-            Intent i = new Intent(Home.this, Stay.class);
+        if (id == R.id.nav_home) {
+            Intent i = new Intent(Contact.this, Home.class);
+            startActivity(i);
+            // Handle the camera action
+        } else if (id == R.id.nav_stay) {
+            Intent i = new Intent(Contact.this, Stay.class);
             startActivity(i);
 
         } else if (id == R.id.nav_about) {
-            Intent i = new Intent(Home.this, About.class);
+            Intent i = new Intent(Contact.this, About.class);
             startActivity(i);
 
-        } else if (id == R.id.nav_contact) {
-            Intent i = new Intent(Home.this, Contact.class);
-            startActivity(i);
+
+
 
 
         }
@@ -143,14 +149,5 @@ public class Home extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public boolean isOnline(Context context) {
-        ConnectivityManager cm
-                =(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
     }
 }

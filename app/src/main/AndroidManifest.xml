@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.demoscad.msafiri">
+    package="com.msafiri.travel.msafirikenya">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,28 +15,28 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
         <activity
-            android:name=".MainActivity"
+            android:name="com.msafiri.travel.msafirikenya.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
         <activity
-            android:name=".Home"
+            android:name="com.msafiri.travel.msafirikenya.Home"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Stay"
+            android:name="com.msafiri.travel.msafirikenya.Stay"
             android:label="@string/title_activity_stay"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".About"
+            android:name="com.msafiri.travel.msafirikenya.About"
             android:label="@string/title_activity_about"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Contact"
+            android:name="com.msafiri.travel.msafirikenya.Contact"
             android:label="@string/title_activity_contact"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Splash">
+        <activity android:name="com.msafiri.travel.msafirikenya.Splash">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
