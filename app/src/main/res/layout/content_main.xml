@@ -11,22 +11,21 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="3dp">
+        android:layout_height="6dp">
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
-            android:layout_height="8dp"
+            android:layout_height="6dp"
             android:layout_marginTop="-3dp"
             android:layout_gravity="top"
             style="?android:attr/progressBarStyleHorizontal"
-            android:progress="5"
-            android:background="@android:color/transparent"/>
+            android:progress="20"
+            android:background="@color/colorAccent"/>
     </FrameLayout>
 
     <WebView
         android:id="@+id/mainweb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+         />
 </RelativeLayout>

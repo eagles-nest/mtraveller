@@ -72,9 +72,11 @@ public class MainActivity extends AppCompatActivity
 //                loadingDialog.show();
                 if (progress >= 100) {
                     frameLayout.setVisibility(View.GONE);
+                    setTitle(view.getTitle());
                     //loadingDialog.dismiss();
                     //loadingDialog.dismiss();
                 }
+                super.onProgressChanged(view,progress);
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity
             //no internet
             String errorMsg="Internet Connection required";
             Toast.makeText(MainActivity.this,errorMsg, Toast.LENGTH_LONG).show();
-            loadingDialog.dismiss();
+            //loadingDialog.dismiss();
         }
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity
                         "})()");
             }
         });
+        progressBar.setProgress(0);
 
     }
     public boolean isOnline(Context context) {
