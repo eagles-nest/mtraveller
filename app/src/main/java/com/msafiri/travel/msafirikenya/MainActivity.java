@@ -56,25 +56,16 @@ public class MainActivity extends AppCompatActivity
         webView = (WebView) findViewById(R.id.mainweb);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setHorizontalScrollBarEnabled(false);
-//        loadingDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE)
-//                .setTitleText("Msafirikenya Loading ...");;
-//        loadingDialog.setCancelable(true);
-//        loadingDialog.setCanceledOnTouchOutside(false);
-//        loadingDialog.show();
 
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //my new method
                 frameLayout.setVisibility(View.VISIBLE);
                 progressBar.setProgress(progress);
-                setTitle("Loading...");
-//                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
-//                loadingDialog.show();
+                //setTitle(" Msafirikenya Loading...");
                 if (progress >= 100) {
                     frameLayout.setVisibility(View.GONE);
-                    setTitle(view.getTitle());
-                    //loadingDialog.dismiss();
-                    //loadingDialog.dismiss();
+                    //setTitle(view.getTitle());
                 }
                 super.onProgressChanged(view,progress);
             }

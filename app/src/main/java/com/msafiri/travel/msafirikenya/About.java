@@ -13,9 +13,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -24,6 +27,8 @@ public class About extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private String postUrl = "http://msafirikenya.co.ke/msafiri";
     private WebView webView;
+    protected ProgressBar progressBar;
+    protected FrameLayout frameLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,23 +47,32 @@ public class About extends AppCompatActivity
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
+        progressBar=(ProgressBar)findViewById(R.id.progressBar);
+        frameLayout=(FrameLayout)findViewById(R.id.frameLayout);
+        progressBar.setMax(100);
         webView = (WebView) findViewById(R.id.aboutweb);
         webView.getSettings().setJavaScriptEnabled(true);
-        final SweetAlertDialog loadingDialog = new SweetAlertDialog(About.this, SweetAlertDialog.PROGRESS_TYPE)
-                .setTitleText("Msafirikenya Loading ...");;
-        loadingDialog.setCancelable(true);
-        loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.show();
+//        final SweetAlertDialog loadingDialog = new SweetAlertDialog(About.this, SweetAlertDialog.PROGRESS_TYPE)
+//                .setTitleText("Msafirikenya Loading ...");;
+//        loadingDialog.setCancelable(true);
+//        loadingDialog.setCanceledOnTouchOutside(false);
+//        loadingDialog.show();
 
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //my new method
-                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
-                loadingDialog.show();
+//                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
+//                loadingDialog.show();
+                frameLayout.setVisibility(View.VISIBLE);
+                progressBar.setProgress(progress);
+                //setTitle(" Msafirikenya Loading...");
                 if (progress >= 100) {
                     //loadingDialog.dismiss();
-                    loadingDialog.dismiss();
+                    //loadingDialog.dismiss();
+                    frameLayout.setVisibility(View.GONE);
+                    //setTitle(view.getTitle());
                 }
+                super.onProgressChanged(view,progress);
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -75,7 +89,7 @@ public class About extends AppCompatActivity
             //no internet
             String errorMsg="Internet Connection required";
             Toast.makeText(About.this,errorMsg, Toast.LENGTH_LONG).show();
-            loadingDialog.dismiss();
+            //loadingDialog.dismiss();
         }
         webView.setHorizontalScrollBarEnabled(false);
         webView.setWebViewClient(new WebViewClient() {
@@ -87,6 +101,7 @@ public class About extends AppCompatActivity
                         "})()");
             }
         });
+        progressBar.setProgress(0);
     }
 
     @Override

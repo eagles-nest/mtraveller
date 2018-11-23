@@ -8,12 +8,27 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_home">
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_alignParentTop="true">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="-3dp"
 
+            android:layout_gravity="top"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progress="20"
+            android:background="@android:color/transparent"/>
+    </FrameLayout>
 
     <WebView
         android:id="@+id/homeweb"
+        android:layout_below="@+id/frameLayout"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+        android:layout_height="match_parent" />
 </RelativeLayout>
