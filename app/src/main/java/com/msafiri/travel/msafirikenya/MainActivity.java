@@ -13,9 +13,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private String postUrl = "http://msafirikenya.co.ke/";
     private WebView webView;
+    protected ProgressBar progressBar;
+    protected FrameLayout frameLayout;
     SweetAlertDialog loadingDialog;
 
     @Override
@@ -44,24 +49,31 @@ public class MainActivity extends AppCompatActivity
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
+        progressBar=(ProgressBar)findViewById(R.id.progressBar);
+        frameLayout=(FrameLayout)findViewById(R.id.frameLayout);
+        progressBar.setMax(100);
 
         webView = (WebView) findViewById(R.id.mainweb);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setHorizontalScrollBarEnabled(false);
-        loadingDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE)
-                .setTitleText("Msafirikenya Loading ...");;
-        loadingDialog.setCancelable(true);
-        loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.show();
+//        loadingDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE)
+//                .setTitleText("Msafirikenya Loading ...");;
+//        loadingDialog.setCancelable(true);
+//        loadingDialog.setCanceledOnTouchOutside(false);
+//        loadingDialog.show();
 
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //my new method
-                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
-                loadingDialog.show();
+                frameLayout.setVisibility(View.VISIBLE);
+                progressBar.setProgress(progress);
+                setTitle("Loading...");
+//                loadingDialog.setTitleText("Msafirikenya Loading... "+String.valueOf(progress)+"%");
+//                loadingDialog.show();
                 if (progress >= 100) {
+                    frameLayout.setVisibility(View.GONE);
                     //loadingDialog.dismiss();
-                    loadingDialog.dismiss();
+                    //loadingDialog.dismiss();
                 }
             }
 
