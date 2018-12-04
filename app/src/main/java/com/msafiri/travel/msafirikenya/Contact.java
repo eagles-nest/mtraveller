@@ -26,7 +26,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class Contact extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String postUrl = "http://msafirikenya.co.ke/contact-us";
+    private String postUrl = "https://msafirikenya.co.ke/contact-us";
     private WebView webView;
     protected ProgressBar progressBar;
     protected FrameLayout frameLayout;
