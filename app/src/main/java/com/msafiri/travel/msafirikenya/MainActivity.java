@@ -1,10 +1,16 @@
 package com.msafiri.travel.msafirikenya;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -30,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     protected ProgressBar progressBar;
     protected FrameLayout frameLayout;
     SweetAlertDialog loadingDialog;
+    Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +64,14 @@ public class MainActivity extends AppCompatActivity
 
         webView = (WebView) findViewById(R.id.mainweb);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setHorizontalScrollBarEnabled(false);
+        webView.getSettings().setGeolocationEnabled(true);
 
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        }, 0);
+//        webView.getSettings().setGeolocationDatabasePath( context.getFilesDir().getPath() );
+        webView.setHorizontalScrollBarEnabled(false);
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //my new method
@@ -70,7 +85,37 @@ public class MainActivity extends AppCompatActivity
                 super.onProgressChanged(view,progress);
             }
 
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            @Override
+            public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
+                //Log.i(TAG, "onGeolocationPermissionsShowPrompt()");
+
+                final boolean remember = true;
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Locations");
+                builder.setMessage("Would like to use your Current Location ")
+                        .setCancelable(true).setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // origin, allow, remember
+                        callback.invoke(origin, true, remember);
+                        int result = ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
+                        if (result == PackageManager.PERMISSION_GRANTED) {
+
+                        } else {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+                        }
+                    }
+                }).setNegativeButton("Don't Allow", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // origin, allow, remember
+                        callback.invoke(origin, false, remember);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+
+
+                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Log.i("WEB_VIEW_TEST", "error code:" + errorCode);
                 loadErrorPage(view);
             }
@@ -79,6 +124,7 @@ public class MainActivity extends AppCompatActivity
         if(isOnline){
             //has internet
             webView.loadUrl(postUrl);
+
             webView.setWebViewClient(new WebViewClient());
         }else{
             //no internet
